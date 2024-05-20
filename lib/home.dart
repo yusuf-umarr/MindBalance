@@ -15,6 +15,9 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _sleepHourController = TextEditingController();
   final TextEditingController _stressLevelController = TextEditingController();
 
+List<String> moodData =["Happy","Hopeful", "Worried", "Stressed","Sad","Angry"];
+
+String? currentMood;
   @override
   void dispose() {
     _moodController.dispose();
@@ -28,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stay on track'),
+        title: const Text('MindBalance'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -43,6 +46,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
+              _showMoodCard(),
               TextFormField(
                 controller: _moodController,
                 decoration: const InputDecoration(hintText: "Mood"),
@@ -52,14 +56,14 @@ class _HomePageState extends State<HomePage> {
               ),
               TextFormField(
                 controller: _sleepHourController,
-                decoration: const InputDecoration(hintText: "Av. Sleep duration"),
+                decoration: const InputDecoration(hintText: "Average sleeping hours"),
               ),
               const SizedBox(
                 height: 40,
               ),
               TextFormField(
                 controller: _stressLevelController,
-                decoration: const InputDecoration(hintText: "Stress level"),
+                decoration: const InputDecoration(hintText: "Stress level (1-10)"),
               ),
               const SizedBox(
                 height: 40,
@@ -104,4 +108,24 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  _showMoodCard(){
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children:moodData.map<Widget>((mood){
+        return InkWell(
+          onTap: (){
+            setState(() {
+              currentMood = mood;
+            });
+          },
+          child: Card(
+            color: mood ==currentMood?Colors.blue:Colors.transparent,
+            child: Text(mood),));
+      } ).toList(),
+    );
+  }
+
+ 
 }

@@ -122,7 +122,10 @@ String? currentMood;
           },
           child: Card(
             color: mood ==currentMood?Colors.blue:Colors.transparent,
-            child: Text(mood),));
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(mood),
+            ),));
       } ).toList(),
     );
   }

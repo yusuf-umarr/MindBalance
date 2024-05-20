@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_balance/provider/service_provider.dart';
 import 'package:mind_balance/screen/result_page.dart';
@@ -12,8 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _moodController = TextEditingController();
-  final TextEditingController _sleepHourController = TextEditingController();
-  final TextEditingController _stressLevelController = TextEditingController();
 
   List<String> moodData = [
     "Happy",
@@ -25,13 +26,19 @@ class _HomePageState extends State<HomePage> {
   ];
 
   String? currentMood;
+  double averageSleep = 0.0;
+  double stressLevel = 0.0;
   @override
   void dispose() {
     _moodController.dispose();
-    _sleepHourController.dispose();
-    _stressLevelController.dispose();
-    // TODO: implement dispose
     super.dispose();
+  }
+
+  String getSliderVal(double input) {
+    double avValue = input / 10;
+    String outputVal = avValue.toStringAsFixed(0);
+
+    return outputVal;
   }
 
   @override
@@ -72,18 +79,57 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
-              TextFormField(
-                controller: _sleepHourController,
-                decoration:
-                    const InputDecoration(hintText: "Average sleeping hours"),
+              Row(
+                children: [
+                  Text(
+                    "Average sleeping hours: ${getSliderVal(averageSleep)} hours",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: double.maxFinite,
+                child: CupertinoSlider(
+                  min: 0.0,
+                  max: 100.0,
+                  value: averageSleep,
+                  onChanged: (value) {
+                    setState(() {
+                      averageSleep = value;
+                      // log("averageSleep:${averageSleep / 10}");
+                    });
+                  },
+                ),
               ),
               const SizedBox(
                 height: 40,
               ),
-              TextFormField(
-                controller: _stressLevelController,
-                decoration:
-                    const InputDecoration(hintText: "Stress level (1-10)"),
+              Row(
+                children: [
+                  Text(
+                    "Stress level : ${getSliderVal(stressLevel)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: double.maxFinite,
+                child: CupertinoSlider(
+                  min: 0.0,
+                  max: 100.0,
+                  value: stressLevel,
+                  onChanged: (value) {
+                    setState(() {
+                      stressLevel = value;
+                    });
+                  },
+                ),
               ),
               const SizedBox(
                 height: 40,
@@ -92,9 +138,10 @@ class _HomePageState extends State<HomePage> {
                 return ElevatedButton(
                   onPressed: () {
                     context.read<ServiceProvider>().getHealthResponse(
-                        mood: _moodController.text,
-                        sleepHour: _sleepHourController.text,
-                        stressLevel: _stressLevelController.text);
+                          mood: _moodController.text,
+                          sleepHour: averageSleep.toString(),
+                          stressLevel: stressLevel.toString(),
+                        );
                   },
                   child: Text(
                     val.networkState == NetworkState.loading

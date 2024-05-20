@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/home.dart';
-import 'package:myapp/provider/service_provider.dart';
+import 'package:mind_balance/provider/service_provider.dart';
+import 'package:mind_balance/screen/home.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => ServiceProvider()),
-    ],
-    
+    ChangeNotifierProvider(create: (_) => ServiceProvider()),
+  ],
     child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Mind balance',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -29,4 +27,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

@@ -1,6 +1,6 @@
 {
-    "name": "myapp",
-    "short_name": "myapp",
+    "name": "mind_balance",
+    "short_name": "mind_balance",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

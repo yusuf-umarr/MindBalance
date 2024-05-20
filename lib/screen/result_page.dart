@@ -1,7 +1,6 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1197157839.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:931832322.
+
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/service_provider.dart';
+import 'package:mind_balance/provider/service_provider.dart';
 import 'package:provider/provider.dart';
 
 class ResultPage extends StatefulWidget {

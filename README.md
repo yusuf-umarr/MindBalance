@@ -1,4 +1,4 @@
-# myapp
+# mind_balance
 
 A new Flutter project.
 

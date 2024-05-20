@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:mind_balance/config/config.dart';
 // import 'package:http/http.dart' as http;
-import 'package:myapp/config/config.dart';
 
 enum NetworkState {
   idle,
@@ -48,6 +48,7 @@ class ServiceProvider extends ChangeNotifier {
         log("Response:${response.text!}");
       
     } catch (e) {
+        log("Error res:${e}");
       
     }
   

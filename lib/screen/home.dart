@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_balance/provider/service_provider.dart';
+import 'package:mind_balance/screen/animation.dart';
 import 'package:mind_balance/screen/result_page.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,9 @@ class _HomePageState extends State<HomePage> {
     "Sad",
     "Angry",
   ];
+
+  String title =
+      "Track your mental wellbeing and take control of your happiness. Share your mood, sleep, and stress levels to gain valuable insights and receive personalized recommendations for a healthier mind.";
 
   String? currentMood;
   double averageSleep = 0.0;
@@ -51,10 +55,12 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
+      // ScreenTitle(text: title),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
-          child: Column(
+            child: AnimatedWidgetContainer(
+          data: Column(
             children: [
               const SizedBox(
                 height: 20,
@@ -174,7 +180,9 @@ class _HomePageState extends State<HomePage> {
               }),
             ],
           ),
-        ),
+
+          ///
+        )),
       ),
     );
   }
@@ -183,28 +191,102 @@ class _HomePageState extends State<HomePage> {
     return Wrap(
       spacing: 5,
       runSpacing: 10,
-      children: moodData.map<Widget>((mood) {
-        return InkWell(
+      children: List.generate(
+        moodData.length,
+        (index) {
+          return InkWell(
             onTap: () {
               setState(() {
-                currentMood = mood;
+                currentMood = moodData[index];
               });
+              log("index:$index");
             },
-            child: Card(
-              color: mood == currentMood
-                  ? Theme.of(context).colorScheme.inversePrimary
-                  : Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  mood,
-                  style: TextStyle(
-                    color: mood == currentMood ? Colors.white : Colors.purple,
+            child: TweenAnimationBuilder(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: const Duration(seconds: 1),
+              builder: (BuildContext context, double val, Widget? child) {
+                log("valll:$val");
+                return Opacity(
+                  opacity: val,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: val * 20),
+                    child: child,
+                  ),
+                );
+              },
+              child: Card(
+                color: moodData[index] == currentMood
+                    ? Theme.of(context).colorScheme.inversePrimary
+                    : Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    moodData[index],
+                    style: TextStyle(
+                      color: moodData[index] == currentMood
+                          ? Colors.white
+                          : Colors.purple,
+                    ),
                   ),
                 ),
               ),
-            ));
-      }).toList(),
+            ),
+
+            // Opacity(
+            //   opacity: ,
+            //   child: Card(
+            //     color: moodData[index] == currentMood
+            //         ? Theme.of(context).colorScheme.inversePrimary
+            //         : Colors.white,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Text(
+            //         moodData[index],
+            //         style: TextStyle(
+            //           color: moodData[index] == currentMood
+            //               ? Colors.white
+            //               : Colors.purple,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          );
+        },
+      ),
     );
   }
+
+//   _showMoodCard() {
+//     return Wrap(
+//       spacing: 5,
+//       runSpacing: 10,
+//       children: moodData.map<Widget>((mood) {
+//         return InkWell(
+//             onTap: () {
+//               setState(() {
+//                 currentMood = mood;
+//               });
+//             },
+//             child:  Opacity(
+//               opacity: val,
+//               child: Card(
+  // color: mood == currentMood
+  //     ? Theme.of(context).colorScheme.inversePrimary
+  //     : Colors.white,
+//                 child: Padding(
+//                   padding: const EdgeInsets.all(8.0),
+//                   child: Text(
+//                     mood,
+//                     style: TextStyle(
+//                       color: mood == currentMood ? Colors.white : Colors.purple,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ));
+//       }).toList(),
+//     );
+//   }
+// // //
 }

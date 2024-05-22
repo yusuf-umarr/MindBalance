@@ -45,6 +45,8 @@ class _HomePageState extends State<HomePage> {
     return outputVal;
   }
 
+  bool isOpacity = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,130 +61,151 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
-            child: AnimatedWidgetContainer(
-          data: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                  "Track your mental wellbeing and take control of your happiness. Share your mood, sleep, and stress levels to gain valuable insights and receive personalized recommendations for a healthier mind."),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Text(
-                    "How are you feeling today?:",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                  ),
-                ],
-              ),
-              _showMoodCard(),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Average sleeping hours: ${getSliderVal(averageSleep)} hours",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: double.maxFinite,
-                child: CupertinoSlider(
-                  min: 0.0,
-                  max: 100.0,
-                  value: averageSleep,
-                  onChanged: (value) {
-                    setState(() {
-                      averageSleep = value;
-                      // log("averageSleep:${averageSleep / 10}");
-                    });
-                  },
+          child: AnimatedWidgetContainer(
+            data: Column(
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Stress level : ${getSliderVal(stressLevel)}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: double.maxFinite,
-                child: CupertinoSlider(
-                  min: 0.0,
-                  max: 100.0,
-                  value: stressLevel,
-                  onChanged: (value) {
-                    setState(() {
-                      stressLevel = value;
-                    });
-                  },
+                const Text(
+                    "Track your mental wellbeing and take control of your happiness. Share your mood, sleep, and stress levels to gain valuable insights and receive personalized recommendations for a healthier mind."),
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Consumer<ServiceProvider>(builder: (context, val, _) {
-                return ElevatedButton(
-                  onPressed: () {
-                    context.read<ServiceProvider>().getHealthResponse(
-                          mood: _moodController.text,
-                          sleepHour: averageSleep.toString(),
-                          stressLevel: stressLevel.toString(),
+                Row(
+                  children: [
+                    Text(
+                      "How are you feeling today?:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
+                ),
+                _showMoodCard(),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Average sleeping hours: ${getSliderVal(averageSleep)} hours",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: CupertinoSlider(
+                    min: 0.0,
+                    max: 100.0,
+                    value: averageSleep,
+                    onChanged: (value) {
+                      setState(() {
+                        averageSleep = value;
+                        // log("averageSleep:${averageSleep / 10}");
+                      });
+                                            context
+                          .read<ServiceProvider>()
+                          .setNetworkState(NetworkState.idle);
+
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Stress level : ${getSliderVal(stressLevel)}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: CupertinoSlider(
+                    min: 0.0,
+                    max: 100.0,
+                    value: stressLevel,
+                    onChanged: (value) {
+                      setState(() {
+                        stressLevel = value;
+
+                      });
+                      context.read<ServiceProvider>().setNetworkState(NetworkState.idle);
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                // Consumer<ServiceProvider>(builder: (context, val, _) {
+                //   return ElevatedButton(
+                //     onPressed: () {
+                //       context.read<ServiceProvider>().getHealthResponse(
+                //             mood: _moodController.text,
+                //             sleepHour: averageSleep.toString(),
+                //             stressLevel: stressLevel.toString(),
+                //           );
+                //     },
+                //     child: val.networkState == NetworkState.loading
+                //         ? CupertinoActivityIndicator()
+                //         : Text(
+                //             "Start Tracking",
+                //           ),
+                //   );
+                // }),
+                // const SizedBox(
+                //   height: 20,
+                // ),
+                Consumer<ServiceProvider>(builder: (context, val, _) {
+                  if (val.networkState == NetworkState.loaded) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResultPage(),
+                          ),
                         );
-                  },
-                  child: Text(
-                    val.networkState == NetworkState.loading
-                        ? "Loading..."
-                        : "Start Tracking",
-                  ),
-                );
-              }),
-              const SizedBox(
-                height: 40,
-              ),
-              Consumer<ServiceProvider>(builder: (context, val, _) {
-                if (val.networkState == NetworkState.loaded) {
+                      },
+                      child: const Text(
+                        "View Results",
+                      ),
+                    );
+                  }
+
                   return ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ResultPage(),
-                        ),
-                      );
+                      context.read<ServiceProvider>().getHealthResponse(
+                            mood: _moodController.text,
+                            sleepHour: averageSleep.toString(),
+                            stressLevel: stressLevel.toString(),
+                          );
                     },
-                    child: const Text(
-                      "View Results",
-                    ),
+                    child: val.networkState == NetworkState.loading
+                        ? const CupertinoActivityIndicator()
+                        : const Text(
+                            "Start Tracking",
+                          ),
                   );
-                }
+                  ;
+                }),
+              ],
+            ),
 
-                return const SizedBox();
-              }),
-            ],
+            ///
           ),
-
-          ///
-        )),
+        ),
       ),
     );
   }
@@ -199,6 +222,10 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 currentMood = moodData[index];
               });
+                                    context
+                  .read<ServiceProvider>()
+                  .setNetworkState(NetworkState.idle);
+
               log("index:$index");
             },
             child: TweenAnimationBuilder(
@@ -207,7 +234,7 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, double val, Widget? child) {
                 log("valll:$val");
                 return Opacity(
-                  opacity: val,
+                  opacity: val == 1 ? 1 : 0,
                   child: Padding(
                     padding: EdgeInsets.only(top: val * 20),
                     child: child,
@@ -231,62 +258,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
-            // Opacity(
-            //   opacity: ,
-            //   child: Card(
-            //     color: moodData[index] == currentMood
-            //         ? Theme.of(context).colorScheme.inversePrimary
-            //         : Colors.white,
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Text(
-            //         moodData[index],
-            //         style: TextStyle(
-            //           color: moodData[index] == currentMood
-            //               ? Colors.white
-            //               : Colors.purple,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
           );
         },
       ),
     );
   }
-
-//   _showMoodCard() {
-//     return Wrap(
-//       spacing: 5,
-//       runSpacing: 10,
-//       children: moodData.map<Widget>((mood) {
-//         return InkWell(
-//             onTap: () {
-//               setState(() {
-//                 currentMood = mood;
-//               });
-//             },
-//             child:  Opacity(
-//               opacity: val,
-//               child: Card(
-  // color: mood == currentMood
-  //     ? Theme.of(context).colorScheme.inversePrimary
-  //     : Colors.white,
-//                 child: Padding(
-//                   padding: const EdgeInsets.all(8.0),
-//                   child: Text(
-//                     mood,
-//                     style: TextStyle(
-//                       color: mood == currentMood ? Colors.white : Colors.purple,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ));
-//       }).toList(),
-//     );
-//   }
-// // //
 }

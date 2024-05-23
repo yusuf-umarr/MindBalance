@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_balance/provider/service_provider.dart';
-import 'package:mind_balance/screen/animation.dart';
+import 'package:mind_balance/widget/animation.dart';
 import 'package:mind_balance/screen/result_page.dart';
 import 'package:provider/provider.dart';
 
@@ -67,8 +67,13 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text(
-                    "Track your mental wellbeing and take control of your happiness. Share your mood, sleep, and stress levels to gain valuable insights and receive personalized recommendations for a healthier mind."),
+                Text(
+                  "Track your mental wellbeing and take control of your happiness. Share your mood, sleep, and stress levels to gain valuable insights and receive personalized recommendations for a healthier mind.",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -109,10 +114,9 @@ class _HomePageState extends State<HomePage> {
                         averageSleep = value;
                         // log("averageSleep:${averageSleep / 10}");
                       });
-                                            context
+                      context
                           .read<ServiceProvider>()
                           .setNetworkState(NetworkState.idle);
-
                     },
                   ),
                 ),
@@ -139,34 +143,16 @@ class _HomePageState extends State<HomePage> {
                     onChanged: (value) {
                       setState(() {
                         stressLevel = value;
-
                       });
-                      context.read<ServiceProvider>().setNetworkState(NetworkState.idle);
+                      context
+                          .read<ServiceProvider>()
+                          .setNetworkState(NetworkState.idle);
                     },
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                // Consumer<ServiceProvider>(builder: (context, val, _) {
-                //   return ElevatedButton(
-                //     onPressed: () {
-                //       context.read<ServiceProvider>().getHealthResponse(
-                //             mood: _moodController.text,
-                //             sleepHour: averageSleep.toString(),
-                //             stressLevel: stressLevel.toString(),
-                //           );
-                //     },
-                //     child: val.networkState == NetworkState.loading
-                //         ? CupertinoActivityIndicator()
-                //         : Text(
-                //             "Start Tracking",
-                //           ),
-                //   );
-                // }),
-                // const SizedBox(
-                //   height: 20,
-                // ),
                 Consumer<ServiceProvider>(builder: (context, val, _) {
                   if (val.networkState == NetworkState.loaded) {
                     return ElevatedButton(
@@ -174,7 +160,11 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ResultPage(),
+                            builder: (context) => ResultPage(
+                              mood: _moodController.text,
+                              sleepHour: averageSleep.toString(),
+                              stressLevel: stressLevel.toString(),
+                            ),
                           ),
                         );
                       },
@@ -186,19 +176,31 @@ class _HomePageState extends State<HomePage> {
 
                   return ElevatedButton(
                     onPressed: () {
-                      context.read<ServiceProvider>().getHealthResponse(
-                            mood: _moodController.text,
-                            sleepHour: averageSleep.toString(),
-                            stressLevel: stressLevel.toString(),
-                          );
+                      if (currentMood != null &&
+                          averageSleep != 0.0 &&
+                          stressLevel != 0.0) {
+                        context.read<ServiceProvider>().getHealthResponse(
+                              mood: _moodController.text,
+                              sleepHour: averageSleep.toString(),
+                              stressLevel: stressLevel.toString(),
+                            );
+                      } else {
+                        log("not working fine");
+                      }
                     },
                     child: val.networkState == NetworkState.loading
                         ? const CupertinoActivityIndicator()
-                        : const Text(
+                        : Text(
                             "Start Tracking",
+                            style: TextStyle(
+                              color: (currentMood != null &&
+                                      averageSleep != 0.0 &&
+                                      stressLevel != 0.0)
+                                  ? Colors.purple
+                                  : Colors.grey,
+                            ),
                           ),
                   );
-                  ;
                 }),
               ],
             ),
@@ -222,11 +224,9 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 currentMood = moodData[index];
               });
-                                    context
+              context
                   .read<ServiceProvider>()
                   .setNetworkState(NetworkState.idle);
-
-              log("index:$index");
             },
             child: TweenAnimationBuilder(
               tween: Tween<double>(begin: 0, end: 1),

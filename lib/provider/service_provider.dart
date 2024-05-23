@@ -13,9 +13,16 @@ enum NetworkState {
   error,
 }
 
-class ServiceProvider extends ChangeNotifier {
+enum QuoteState {
+  idle,
+  loading,
+  loaded,
+  error,
+}
 
-  String? responseData;
+class ServiceProvider extends ChangeNotifier {
+  String? testResponseData;
+  String? qouteResponseData;
 
   NetworkState networkState = NetworkState.idle;
 
@@ -24,33 +31,65 @@ class ServiceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  QuoteState quoteState = QuoteState.idle;
 
+  void setQuoteState(QuoteState state) {
+    quoteState = state;
 
-  Future<void> getHealthResponse({ String mood="", String sleepHour="", String stressLevel="",} ) async {
-            setNetworkState(NetworkState.loading);
+    log("quoteState:$quoteState");
+    notifyListeners();
+  }
 
+  Future<void> getHealthResponse({
+    String mood = "",
+    String sleepHour = "",
+    String stressLevel = "",
+  }) async {
+    setNetworkState(NetworkState.loading);
     try {
-        final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+      final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
 
-        final prompt = """I am developing a health tracker app that takes into account various user inputs to assess their current health state and provide personalized recommendations. Based on the user's inputs: Mood: 
+      final prompt =
+          """I am developing a health tracker app that takes into account various user inputs to assess their current health state and provide personalized recommendations. Based on the user's inputs: Mood: 
         $mood, Average sleep duration: $sleepHour hours,
         Stress Levels: $stressLevel out of 10.
         Use the above input to state their current health status, and make necessary recommendations the recommendations should include self awareness, coping mechanism(such as meditation), mental well-being""";
-        final content = [Content.text(prompt)];
-        final response = await model.generateContent(content);
+      final content = [Content.text(prompt)];
+      final response = await model.generateContent(content);
 
-        responseData = response.text;
-        notifyListeners();
-
-        setNetworkState(NetworkState.loaded);
-      
-
-        log("Response:${response.text!}");
-      
+      testResponseData = response.text;
+      notifyListeners();
+      setNetworkState(NetworkState.loaded);
     } catch (e) {
-        log("Error res:${e}");
-      
+      log("Error res:${e}");
     }
-  
   }
+
+  ///
+  Future<void> getQoutes({
+    String mood = "",
+    String sleepHour = "",
+    String stressLevel = "",
+  }) async {
+    setQuoteState(QuoteState.loading);
+    try {
+      final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+
+      final prompt =
+          """I am developing a health tracker app that takes into account various user inputs to assess their current health state and provide personalized recommendations. Based on the user's inputs: Mood: 
+        $mood, Average sleep duration: $sleepHour hours,
+        Stress Levels: $stressLevel out of 10.
+        Use the above input to provide 5 different Inspirational quotes or a health pick up line that can help the user in this situation, hint: only shoe the quote and the author and dont show the meaning """;
+      final content = [Content.text(prompt)];
+      final response = await model.generateContent(content);
+
+      qouteResponseData = response.text;
+      notifyListeners();
+      setQuoteState(QuoteState.loaded);
+    } catch (e) {
+      log("Error res:${e}");
+    }
+  }
+
+  ///
 }

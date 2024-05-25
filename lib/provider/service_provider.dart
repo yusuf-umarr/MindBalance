@@ -1,10 +1,7 @@
-// import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:mind_balance/config/config.dart';
-// import 'package:http/http.dart' as http;
 
 enum NetworkState {
   idle,
@@ -35,8 +32,6 @@ class ServiceProvider extends ChangeNotifier {
 
   void setQuoteState(QuoteState state) {
     quoteState = state;
-
-    log("quoteState:$quoteState");
     notifyListeners();
   }
 
@@ -65,7 +60,6 @@ class ServiceProvider extends ChangeNotifier {
     }
   }
 
-  ///
   Future<void> getQoutes({
     String mood = "",
     String sleepHour = "",
@@ -90,6 +84,4 @@ class ServiceProvider extends ChangeNotifier {
       log("Error res:${e}");
     }
   }
-
-  ///
 }

@@ -44,7 +44,7 @@ class _QuotePageState extends State<QuotePage> {
     log("${provider.qouteResponseData}");
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mind balance quotes"),
+        title: const Text("MindBalance quotes"),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

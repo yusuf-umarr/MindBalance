@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_balance/provider/service_provider.dart';
@@ -112,7 +110,6 @@ class _HomePageState extends State<HomePage> {
                     onChanged: (value) {
                       setState(() {
                         averageSleep = value;
-                        // log("averageSleep:${averageSleep / 10}");
                       });
                       context
                           .read<ServiceProvider>()
@@ -176,16 +173,12 @@ class _HomePageState extends State<HomePage> {
 
                   return ElevatedButton(
                     onPressed: () {
-                      if (currentMood != null &&
-                          averageSleep != 0.0 &&
-                          stressLevel != 0.0) {
+                      if (currentMood != null && averageSleep != 0.0) {
                         context.read<ServiceProvider>().getHealthResponse(
                               mood: _moodController.text,
                               sleepHour: averageSleep.toString(),
                               stressLevel: stressLevel.toString(),
                             );
-                      } else {
-                        log("not working fine");
                       }
                     },
                     child: val.networkState == NetworkState.loading
@@ -193,19 +186,16 @@ class _HomePageState extends State<HomePage> {
                         : Text(
                             "Start Tracking",
                             style: TextStyle(
-                              color: (currentMood != null &&
-                                      averageSleep != 0.0 &&
-                                      stressLevel != 0.0)
-                                  ? Colors.purple
-                                  : Colors.grey,
+                              color:
+                                  (currentMood != null && averageSleep != 0.0)
+                                      ? Colors.purple
+                                      : Colors.grey,
                             ),
                           ),
                   );
                 }),
               ],
             ),
-
-            ///
           ),
         ),
       ),
@@ -232,7 +222,6 @@ class _HomePageState extends State<HomePage> {
               tween: Tween<double>(begin: 0, end: 1),
               duration: const Duration(seconds: 1),
               builder: (BuildContext context, double val, Widget? child) {
-                log("valll:$val");
                 return Opacity(
                   opacity: val == 1 ? 1 : 0,
                   child: Padding(

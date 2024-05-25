@@ -99,6 +99,7 @@ class _ResultPageState extends State<ResultPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Result and recommendation"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: NotificationListener<ScrollNotification>(
         onNotification: (notification) {

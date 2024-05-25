@@ -45,6 +45,8 @@ class _QuotePageState extends State<QuotePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("MindBalance quotes"),
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

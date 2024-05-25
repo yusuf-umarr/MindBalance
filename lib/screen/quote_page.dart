@@ -41,12 +41,14 @@ class _QuotePageState extends State<QuotePage> {
   Widget build(BuildContext context) {
     final provider = context.watch<ServiceProvider>();
 
-    log("${provider.qouteResponseData}");
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MindBalance quotes"),
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
+        title: const Text(
+          "MindBalance quotes",
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

@@ -98,7 +98,11 @@ class _ResultPageState extends State<ResultPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Result and recommendation"),
+        title: const Text(
+          "Result and recommendation",
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: NotificationListener<ScrollNotification>(

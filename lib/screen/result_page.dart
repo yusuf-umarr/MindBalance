@@ -4,16 +4,12 @@ import 'package:mind_balance/widget/dialog.dart';
 import 'package:provider/provider.dart';
 
 class ResultPage extends StatefulWidget {
-  final String mood;
-  final String stressLevel;
-  final String sleepHour;
+
 
   const ResultPage({
-    Key? key,
-    required this.mood,
-    required this.stressLevel,
-    required this.sleepHour,
-  }) : super(key: key);
+    super.key,
+  
+  });
 
   @override
   State<ResultPage> createState() => _ResultPageState();

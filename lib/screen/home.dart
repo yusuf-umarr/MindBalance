@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_balance/provider/service_provider.dart';
@@ -13,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _moodController = TextEditingController();
 
   List<String> moodData = [
     "Happy",
@@ -30,11 +30,7 @@ class _HomePageState extends State<HomePage> {
   String? currentMood;
   double averageSleep = 0.0;
   double stressLevel = 0.0;
-  @override
-  void dispose() {
-    _moodController.dispose();
-    super.dispose();
-  }
+ 
 
   String getSliderVal(double input) {
     double avValue = input / 10;
@@ -156,11 +152,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ResultPage(
-                              mood: _moodController.text,
-                              sleepHour: averageSleep.toString(),
-                              stressLevel: stressLevel.toString(),
-                            ),
+                            builder: (context) => const ResultPage(),
                           ),
                         );
                       },
@@ -170,27 +162,35 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
 
-                  return ElevatedButton(
-                    onPressed: () {
-                      if (currentMood != null && averageSleep != 0.0) {
-                        context.read<ServiceProvider>().getHealthResponse(
-                              mood: _moodController.text,
-                              sleepHour: averageSleep.toString(),
-                              stressLevel: stressLevel.toString(),
-                            );
-                      }
-                    },
-                    child: val.networkState == NetworkState.loading
-                        ? const CupertinoActivityIndicator()
-                        : Text(
-                            "Start Tracking",
-                            style: TextStyle(
-                              color:
-                                  (currentMood != null && averageSleep != 0.0)
-                                      ? Colors.purple
-                                      : Colors.grey,
-                            ),
-                          ),
+                  return Consumer<ServiceProvider>(
+                    builder: (context, val, _) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          if (currentMood != null && averageSleep != 0.0) {
+                            val.setMood(currentMood!);
+                            val.setAverageSleep(getSliderVal(averageSleep));
+                            val.setStressLevel(getSliderVal(stressLevel));
+                            
+                            val.getHealthResponse(
+                                  mood: currentMood!,
+                                  sleepHour: getSliderVal(averageSleep),
+                                  stressLevel: getSliderVal(stressLevel),
+                                );
+                          }
+                        },
+                        child: val.networkState == NetworkState.loading
+                            ? const CupertinoActivityIndicator()
+                            : Text(
+                                "Start Tracking",
+                                style: TextStyle(
+                                  color:
+                                      (currentMood != null && averageSleep != 0.0)
+                                          ? Colors.purple
+                                          : Colors.grey,
+                                ),
+                              ),
+                      );
+                    }
                   );
                 }),
               ],

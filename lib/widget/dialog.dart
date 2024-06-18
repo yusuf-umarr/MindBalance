@@ -19,7 +19,6 @@ class DialogWidget extends StatefulWidget {
 class _DialogWidgetState extends State<DialogWidget> {
   @override
   Widget build(BuildContext context) {
-    final providerRead = context.read<ServiceProvider>();
     return AlertDialog(
       title: const Text('MindBalance'),
       content: const Text('Do you want some mind balance quotes?'),
@@ -30,23 +29,27 @@ class _DialogWidgetState extends State<DialogWidget> {
           },
           child: const Text('No'),
         ),
-        TextButton(
-          onPressed: () async {
-            providerRead.getQoutes(
-              mood: widget.widget.mood,
-              stressLevel: widget.widget.stressLevel,
-              sleepHour: widget.widget.sleepHour,
+        Consumer<ServiceProvider>(
+          builder: (context, val, _) {
+            return TextButton(
+              onPressed: () async {
+                val.getQoutes(
+                  mood: val.selectedMood,
+                  stressLevel: val.stressLevel,
+                  sleepHour: val.averageSleep,
+                );
+                Navigator.of(context).pop();
+            
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  QuotePage(widget: widget.widget,),
+                  ),
+                );
+              },
+              child: const Text('Yes'),
             );
-            Navigator.of(context).pop();
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>  QuotePage(widget: widget.widget,),
-              ),
-            );
-          },
-          child: const Text('Yes'),
+          }
         ),
       ],
     );

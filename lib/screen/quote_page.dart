@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mind_balance/provider/service_provider.dart';
 import 'package:mind_balance/screen/result_page.dart';
@@ -22,7 +21,6 @@ class _QuotePageState extends State<QuotePage> {
 
     for (String quote in quotes) {
       String cleanedQuote = quote.replaceFirst(RegExp(r'^\d+\.\s*'), '').trim();
-
       quoteWidgets.add(
         Container(
           margin: const EdgeInsets.only(bottom: 16.0),
@@ -65,18 +63,20 @@ class _QuotePageState extends State<QuotePage> {
             height: 20,
           ),
           if (provider.quoteState == QuoteState.loaded)
-            ElevatedButton(
-              onPressed: () {
-                context.read<ServiceProvider>().getQoutes(
-                      mood: widget.widget.mood,
-                      stressLevel: widget.widget.stressLevel,
-                      sleepHour: widget.widget.sleepHour,
-                    );
-              },
-              child: const Text(
-                "see more quotes",
-              ),
-            )
+            Consumer<ServiceProvider>(builder: (context, val, _) {
+              return ElevatedButton(
+                onPressed: () {
+                  val.getQoutes(
+                    mood: val.selectedMood,
+                    stressLevel: val.stressLevel,
+                    sleepHour: val.averageSleep,
+                  );
+                },
+                child: const Text(
+                  "see more quotes",
+                ),
+              );
+            })
         ],
       ),
     );

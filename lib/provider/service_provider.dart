@@ -21,6 +21,13 @@ class ServiceProvider extends ChangeNotifier {
   String? testResponseData;
   String? qouteResponseData;
 
+  String _selectedMood ='';
+  String get selectedMood => _selectedMood;
+  String _averageSleep ='';
+  String get averageSleep => _averageSleep;
+  String _stressLevel ='';
+  String get stressLevel => _stressLevel;
+
   NetworkState networkState = NetworkState.idle;
 
   void setNetworkState(NetworkState state) {
@@ -35,14 +42,29 @@ class ServiceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setMood(mood){
+    _selectedMood =mood;
+    notifyListeners(); 
+  }
+  void setAverageSleep(sleep){
+    _averageSleep =sleep;
+    notifyListeners(); 
+  }
+  void setStressLevel(stress){
+    _stressLevel =stress;
+    notifyListeners(); 
+  }
+
   Future<void> getHealthResponse({
     String mood = "",
     String sleepHour = "",
     String stressLevel = "",
   }) async {
+ 
     setNetworkState(NetworkState.loading);
     try {
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+      final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+      //gemini-pro
 
       final prompt =
           """I am developing a health tracker app that takes into account various user inputs to assess their current health state and provide personalized recommendations. Based on the user's inputs: Mood: 
@@ -56,7 +78,8 @@ class ServiceProvider extends ChangeNotifier {
       notifyListeners();
       setNetworkState(NetworkState.loaded);
     } catch (e) {
-      log("Error res:${e}");
+       setNetworkState(NetworkState.error);
+      log("Error res:$e");
     }
   }
 
@@ -81,7 +104,7 @@ class ServiceProvider extends ChangeNotifier {
       notifyListeners();
       setQuoteState(QuoteState.loaded);
     } catch (e) {
-      log("Error res:${e}");
+      log("Error res:$e");
     }
   }
 }
